@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>监测中心 — 环境监测系统</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header-bar">
+        <h1>环境监测系统</h1>
+        <div class="header-actions">
+          <span class="user-label" id="current-user"></span>
+          <button type="button" class="btn btn-ghost" id="btn-demo">模拟采集一条</button>
+          <button type="button" class="btn btn-ghost" id="btn-logout">退出</button>
+        </div>
+      </header>
+
+      <nav class="nav-tabs">
+        <button type="button" data-tab="monitor" class="active">监测大屏</button>
+        <button type="button" data-tab="users">用户管理</button>
+      </nav>
+
+      <section data-panel="monitor">
+        <div class="cards-grid">
+          <div class="metric-card">
+            <div class="label">光照</div>
+            <div class="value" id="val-light">—</div>
+            <div class="meta" id="meta-light"></div>
+          </div>
+          <div class="metric-card">
+            <div class="label">温度</div>
+            <div class="value" id="val-temp">—</div>
+            <div class="meta" id="meta-temp"></div>
+          </div>
+          <div class="metric-card">
+            <div class="label">湿度</div>
+            <div class="value" id="val-hum">—</div>
+            <div class="meta" id="meta-hum"></div>
+          </div>
+          <div class="metric-card">
+            <div class="label">气压</div>
+            <div class="value" id="val-press">—</div>
+            <div class="meta" id="meta-press"></div>
+          </div>
+          <div class="metric-card">
+            <div class="label">GPS</div>
+            <div class="value" id="val-gps" style="font-size: 1rem">—</div>
+            <div class="meta" id="meta-gps"></div>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="panel chart-box" id="chart-light"></div>
+          <div class="panel chart-box" id="chart-temperature"></div>
+          <div class="panel chart-box" id="chart-humidity"></div>
+          <div class="panel chart-box" id="chart-pressure"></div>
+        </div>
+      </section>
+
+      <section data-panel="users" class="hidden">
+        <div class="panel">
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; align-items: center">
+            <button type="button" class="btn btn-primary" id="btn-open-create" style="width: auto">新建用户</button>
+            <button type="button" class="btn btn-ghost" id="btn-refresh-users">刷新</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="user-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>用户名</th>
+                  <th>显示名</th>
+                  <th>角色</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <button type="button" class="btn btn-ghost" id="btn-prev">上一页</button>
+            <button type="button" class="btn btn-ghost" id="btn-next">下一页</button>
+            <span id="user-page-label"></span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="user-modal" class="modal-backdrop hidden">
+      <div class="modal">
+        <h3>编辑用户</h3>
+        <form id="form-edit-user">
+          <input type="hidden" id="edit-id" />
+          <div class="field">
+            <label>用户名</label>
+            <input id="edit-username" readonly />
+          </div>
+          <div class="field">
+            <label for="edit-password">新密码（留空则不修改）</label>
+            <input id="edit-password" type="password" minlength="4" autocomplete="new-password" />
+          </div>
+          <div class="field">
+            <label for="edit-display">显示名</label>
+            <input id="edit-display" />
+          </div>
+          <div class="field">
+            <label for="edit-role">角色</label>
+            <select id="edit-role">
+              <option value="USER">用户</option>
+              <option value="ADMIN">管理员</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="btn-cancel-edit">取消</button>
+            <button type="submit" class="btn btn-primary" style="width: auto">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="user-create-modal" class="modal-backdrop hidden">
+      <div class="modal">
+        <h3>新建用户</h3>
+        <form id="form-create-user">
+          <div class="field">
+            <label for="create-username">用户名</label>
+            <input id="create-username" required maxlength="64" />
+          </div>
+          <div class="field">
+            <label for="create-password">密码（至少 4 位）</label>
+            <input id="create-password" type="password" required minlength="4" autocomplete="new-password" />
+          </div>
+          <div class="field">
+            <label for="create-display">显示名</label>
+            <input id="create-display" maxlength="128" />
+          </div>
+          <div class="field">
+            <label for="create-role">角色</label>
+            <select id="create-role">
+              <option value="USER">用户</option>
+              <option value="ADMIN">管理员</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="btn-cancel-create">取消</button>
+            <button type="submit" class="btn btn-primary" style="width: auto">创建</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/js/main-app.js"></script>
+  </body>
+</html>

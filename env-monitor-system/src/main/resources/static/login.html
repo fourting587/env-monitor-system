@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>登录 — 环境监测系统</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="login-wrap">
+      <div class="login-card">
+        <h1>环境监测系统</h1>
+        <p class="sub">物联网综合实训 · 请登录</p>
+        <form id="login-form">
+          <div class="field">
+            <label for="username">用户名</label>
+            <input id="username" name="username" autocomplete="username" required />
+          </div>
+          <div class="field">
+            <label for="password">密码</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+          </div>
+          <button type="submit" class="btn btn-primary">登录</button>
+          <p id="login-error" class="msg-error"></p>
+        </form>
+        <p class="sub" style="margin-top: 1.25rem; margin-bottom: 0">
+          默认管理员：<strong>admin</strong> / <strong>admin123</strong><br />
+          演示用户：<strong>demo</strong> / <strong>demo123</strong>
+        </p>
+      </div>
+    </div>
+    <script type="module" src="/js/login-page.js"></script>
+  </body>
+</html>
