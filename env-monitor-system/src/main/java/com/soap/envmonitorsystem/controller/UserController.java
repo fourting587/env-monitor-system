@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,7 +48,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ApiResult<UserProfile> update(
-            @PathVariable Long id,
+            @PathVariable @NonNull Long id,
             @Valid @RequestBody UserUpdateRequest req,
             HttpSession session) {
         userSessionService.requireAdmin(session);
@@ -55,7 +56,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResult<Void> delete(@PathVariable Long id, HttpSession session) {
+    public ApiResult<Void> delete(@PathVariable @NonNull Long id, HttpSession session) {
         userSessionService.requireAdmin(session);
         userManagementService.delete(id);
         return ApiResult.ok();

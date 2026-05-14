@@ -19,7 +19,7 @@ public class UserManagementService {
     private final UserRepository userRepository;
     private final AuthService authService;
 
-    public Page<UserProfile> list(Pageable pageable) {
+    public Page<UserProfile> list(@NonNull Pageable pageable) {
         return userRepository.findAll(pageable).map(this::toProfile);
     }
 
@@ -38,7 +38,7 @@ public class UserManagementService {
     }
 
     @Transactional
-    public UserProfile update(Long id, UserUpdateRequest req) {
+    public UserProfile update(@NonNull Long id, UserUpdateRequest req) {
         User u = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("用户不存在"));
         if (req.password() != null && !req.password().isBlank()) {
             u.setPasswordHash(authService.encodePassword(req.password()));
