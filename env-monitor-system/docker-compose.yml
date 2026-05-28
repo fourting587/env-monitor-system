@@ -1,0 +1,38 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: env-monitor-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-env123456}
+      MYSQL_DATABASE: sensor_db
+      MYSQL_USER: ${MYSQL_USER:-envapp}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-env123456}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./data/createDB.sql:/docker-entrypoint-initdb.d/01-createDB.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p\"$$MYSQL_ROOT_PASSWORD\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+
+  app:
+    build: .
+    container_name: env-monitor-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      MYSQL_USER: ${MYSQL_USER:-envapp}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-env123456}
+    ports:
+      - "8081:8081"
+
+volumes:
+  mysql_data:
