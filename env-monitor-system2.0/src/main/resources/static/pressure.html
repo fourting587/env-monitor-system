@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>气压监测</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  </head>
+  <body data-page="pressure">
+    <div class="dashboard-shell">
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-mark">env</div>
+          <div>
+            <p class="eyebrow">环境监控大屏</p>
+            <h1>环境监控系统</h1>
+          </div>
+        </div>
+
+        <nav class="dashboard-nav">
+          <a class="dashboard-nav-link" href="/main.html">概览</a>
+          <a class="dashboard-nav-link" href="/light.html">光照监测</a>
+          <a class="dashboard-nav-link" href="/temperature.html">温度监测</a>
+          <a class="dashboard-nav-link" href="/humidity.html">湿度监测</a>
+          <a class="dashboard-nav-link active" href="/pressure.html">气压监测</a>
+          <a class="dashboard-nav-link" href="/gps.html">GPS监测</a>
+          <a class="dashboard-nav-link" href="/users.html">用户管理</a>
+        </nav>
+      </aside>
+
+      <main class="dashboard-content">
+        <header class="dashboard-header">
+          <div>
+            <p class="eyebrow">气压监测</p>
+            <h2>当前气压与变化</h2>
+          </div>
+          <div class="dashboard-actions">
+            <span class="user-chip" id="current-user"></span>
+            <button type="button" class="btn btn-primary" id="btn-demo">注入数据</button>
+            <button type="button" class="btn btn-soft" id="btn-logout">登出</button>
+          </div>
+        </header>
+
+        <section>
+          <div class="summary-grid">
+            <div class="summary-card summary-card--soft">
+              <span>气压</span>
+              <strong id="val-press">—</strong>
+              <small id="meta-press"></small>
+            </div>
+          </div>
+          <div class="panel chart-panel" id="chart-pressure"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/js/main-app.js"></script>
+  </body>
+</html>

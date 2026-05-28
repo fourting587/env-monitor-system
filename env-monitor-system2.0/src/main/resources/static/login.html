@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>环境监测-登录</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="login-screen">
+      <div class="login-panel">
+        <div class="brand">
+          <div class="brand-mark">env</div>
+          <div>
+            <h1>环境监控系统</h1>
+            <p>轻量 · 实时 · 可视化</p>
+          </div>
+        </div>
+        <form id="login-form" class="login-form">
+          <label>
+            用户名
+            <input id="username" name="username" autocomplete="username" required />
+          </label>
+          <label>
+            密码
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button type="submit" class="btn btn-primary">登录</button>
+          <p id="login-error" class="msg-error"></p>
+        </form>
+        <div class="login-info">
+          <p>测试账号：</p>
+          <p><strong>admin / admin123</strong></p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/login-page.js"></script>
+  </body>
+</html>

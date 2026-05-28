@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>环境监控系统</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  </head>
+  <body data-page="main">
+    <div class="dashboard-shell">
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-mark">env</div>
+          <div>
+            <p class="eyebrow">环境监控大屏</p>
+            <h1>环境监控系统</h1>
+          </div>
+        </div>
+
+        <nav class="dashboard-nav">
+          <a class="dashboard-nav-link active" href="/main.html">概览</a>
+          <a class="dashboard-nav-link" href="/light.html">光照监测</a>
+          <a class="dashboard-nav-link" href="/temperature.html">温度监测</a>
+          <a class="dashboard-nav-link" href="/humidity.html">湿度监测</a>
+          <a class="dashboard-nav-link" href="/pressure.html">气压监测</a>
+          <a class="dashboard-nav-link" href="/gps.html">GPS监测</a>
+          <a class="dashboard-nav-link" href="/users.html">用户管理</a>
+        </nav>
+      </aside>
+
+      <main class="dashboard-content">
+        <header class="dashboard-header">
+          <div>
+            <p class="eyebrow">当前视图</p>
+            <h2>实时监测与管理</h2>
+          </div>
+          <div class="dashboard-actions">
+            <span class="user-chip" id="current-user"></span>
+            <button type="button" class="btn btn-primary" id="btn-demo">注入数据</button>
+            <button type="button" class="btn btn-soft" id="btn-logout">登出</button>
+          </div>
+        </header>
+
+        <section data-panel="monitor">
+          <div class="summary-grid">
+            <div class="summary-card summary-card--cool">
+              <span>光照强度</span>
+              <strong id="val-light">—</strong>
+              <small id="meta-light"></small>
+            </div>
+            <div class="summary-card summary-card--warm">
+              <span>温度</span>
+              <strong id="val-temp">—</strong>
+              <small id="meta-temp"></small>
+            </div>
+            <div class="summary-card summary-card--fresh">
+              <span>湿度</span>
+              <strong id="val-hum">—</strong>
+              <small id="meta-hum"></small>
+            </div>
+            <div class="summary-card summary-card--soft">
+              <span>气压</span>
+              <strong id="val-press">—</strong>
+              <small id="meta-press"></small>
+            </div>
+            <div class="summary-card summary-card--geo">
+              <span>GPS 定位</span>
+              <strong id="val-gps">—</strong>
+              <small id="meta-gps"></small>
+            </div>
+          </div>
+
+          <div class="chart-grid">
+            <article class="panel chart-panel" id="chart-light"></article>
+            <article class="panel chart-panel" id="chart-temperature"></article>
+            <article class="panel chart-panel" id="chart-humidity"></article>
+            <article class="panel chart-panel" id="chart-pressure"></article>
+          </div>
+        </section>
+
+        <section data-panel="users" class="hidden">
+          <div class="panel panel--full">
+            <div class="panel-header">
+              <h2>用户管理</h2>
+              <div class="panel-actions">
+                <button type="button" class="btn btn-primary" id="btn-open-create">新建用户</button>
+                <button type="button" class="btn btn-soft" id="btn-refresh-users">刷新列表</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="user-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>显示名</th>
+                    <th>角色</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <button type="button" class="btn btn-soft" id="btn-prev">上一页</button>
+              <span id="user-page-label"></span>
+              <button type="button" class="btn btn-soft" id="btn-next">下一页</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="user-modal" class="modal-backdrop hidden">
+      <div class="modal">
+        <h3>编辑用户</h3>
+        <form id="form-edit-user">
+          <input type="hidden" id="edit-id" />
+          <label>
+            用户名
+            <input id="edit-username" readonly />
+          </label>
+          <label>
+            新密码（留空不修改）
+            <input id="edit-password" type="password" minlength="4" autocomplete="new-password" />
+          </label>
+          <label>
+            显示名
+            <input id="edit-display" />
+          </label>
+          <label>
+            角色
+            <select id="edit-role">
+              <option value="USER">用户</option>
+              <option value="ADMIN">管理员</option>
+            </select>
+          </label>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-soft" id="btn-cancel-edit">取消</button>
+            <button type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="user-create-modal" class="modal-backdrop hidden">
+      <div class="modal">
+        <h3>新建用户</h3>
+        <form id="form-create-user">
+          <label>
+            用户名
+            <input id="create-username" required maxlength="64" />
+          </label>
+          <label>
+            密码（至少 4 位）
+            <input id="create-password" type="password" required minlength="4" autocomplete="new-password" />
+          </label>
+          <label>
+            显示名
+            <input id="create-display" maxlength="128" />
+          </label>
+          <label>
+            角色
+            <select id="create-role">
+              <option value="USER">用户</option>
+              <option value="ADMIN">管理员</option>
+            </select>
+          </label>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-soft" id="btn-cancel-create">取消</button>
+            <button type="submit" class="btn btn-primary">创建</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/js/main-app.js"></script>
+  </body>
+</html>
